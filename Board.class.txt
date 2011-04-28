@@ -1,0 +1,188 @@
+001    package de.hska.java.exercises.backtracking;
+002    
+003    import java.util.Arrays;
+004    
+005    
+006    /**
+007     * The game board for English peg solitare with 32 fields.
+008     * Each field is identified by its cartesian coordinates
+009     * (0 to 6 in both dimensions).
+010     * </p>
+011    <table border=1>
+012      <tr><td> </td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr>
+013      <tr><td>0</td><td></td><td> </td><td>X</td><td>X</td><td>X</td><td> </td><td> </td></tr>
+014      <tr><td>1</td><td> </td><td> </td><td>X</td><td>X</td><td>X</td><td> </td><td> </td></tr>
+015      <tr><td>2</td><td>X</td><td>X</td><td>X</td><td>X</td><td>X</td><td>X</td><td>X</td></tr>
+016      <tr><td>3</td><td>X</td><td>X</td><td>X</td><td>O</td><td>X</td><td>X</td><td>X</td></tr>
+017      <tr><td>4</td><td>X</td><td>X</td><td>X</td><td>X</td><td>X</td><td>X</td><td>X</td></tr>
+018      <tr><td>5</td><td> </td><td> </td><td>X</td><td>X</td><td>X</td><td> </td><td> </td></tr>
+019      <tr><td>6</td><td> </td><td> </td><td>X</td><td>X</td><td>X</td><td> </td><td> </td></tr>
+020    </table>
+021     * 
+022     * @author Christian Pape
+023     *
+024     */
+025    public class GameBoard {
+026            
+027            private static final int OCCUPIED = 1;
+028            
+029            private static final int EMPTY = 2;
+030    
+031            private static final int RIGHT = 0;
+032            private static final int TOP = 1;
+033            private static final int LEFT = 2;
+034            private static final int BOTTOM = 3;
+035            
+036            /**
+037             * Contains all directions a peg can be moved according to the rules of the game.
+038             * In practice one should use an enumeration type.
+039             */
+040            private static int [] richtungen = {RIGHT, TOP, LEFT, BOTTOM};
+041            
+042            /**
+043             * the game borad with initial position of all pegs
+044             */
+045            private int [] [] board = {
+046                            {0, 0, 1, 1, 1, 0, 0},
+047                            {0, 0, 1, 1, 1, 0, 0},
+048                            {1, 1, 1, 1, 1, 1, 1},
+049                            {1, 1, 1, 2, 1, 1, 1},
+050                            {1, 1, 1, 1, 1, 1, 1},
+051                            {0, 0, 1, 1, 1, 0, 0},
+052                            {0, 0, 1, 1, 1, 0, 0}
+053            };
+054    
+055            /**
+056             * returns the width (always 7) of the board
+057             */
+058            public int getWidth() {
+059                    return board.length;
+060            }
+061    
+062            /**
+063             * returns the height (always 7) of the board
+064             */
+065            public int getHeight() {
+066                    return board.length;
+067            }
+068    
+069            public void clearField(int x, int y) {
+070                    board[x][y] = EMPTY;
+071            }
+072    
+073            public void setPeg(int x, int y) {
+074                    board[x][y] = OCCUPIED;
+075            }
+076    
+077            /**
+078             * copies the content of the  source to the target
+079             */
+080            public void copyBoard(GameBoard source, GameBoard target) {
+081                    for (int x = 0; x < getWidth(); x++) {
+082                   for (int y = 0; y < getHeight(); y++) {
+083                               target.board[x][y] = source.board[x][y];
+084                       }
+085                    }
+086            }
+087            
+088            /**
+089             * Checks whether there is a peg at (x,y), an empty field at (newX, newY),
+090             * and a peg between both fields.
+091             */
+092            private boolean isValidMove(int x, int y, int newX, int newY) {
+093                    return 0 <= x && x < board.length 
+094                            && 0 <= y && y < board[x].length
+095                            && 0 <= newX && newX < board.length 
+096                            && 0 <= newY && newY < board[newX].length
+097                            && board[newX][newY] == EMPTY
+098                            && board[(x + newX) / 2][(y + newY) / 2] == OCCUPIED
+099                            && board[x][y] == OCCUPIED;
+100                            
+101            }
+102            
+103            /**
+104             * Jumps the peg from (x,y) over the neighbouring peg in the given <code>direction</code>
+105             * and removes the peg we have jumped over. 
+106             * Returns true if the move was according to the game rules; and false otherwise.
+107             * The game board only changes state, if the move was valid.
+108             *       */
+109            public boolean jump(int x, int y, int direction) {
+110                    int newX = getNewX(x, direction);
+111                    int newY = getNewY(y, direction);
+112    
+113                    if ( isValidMove(x, y, newX, newY)) {
+114                            setPeg(newX, newY);
+115                            clearField(x, y);
+116                            clearField((x + newX) / 2, (y + newY) / 2);
+117                            
+118                            return true;
+119                    }
+120                    
+121                    return false;
+122            }
+123            
+124    
+125            /**
+126             * A peg "jumps back" and the previously removed peg is returned at
+127             * its proper position.
+128             */
+129            public void jumpBack(int x, int y, int direction) {
+130                    int newX = getNewX(x, direction);
+131                    int newY = getNewY(y, direction);
+132                    
+133                    clearField(newX, newY);
+134                    setPeg(x, y);
+135                    setPeg((x + newX) / 2, (y + newY) / 2);
+136            }
+137            
+138            private int getNewX(int x, int direction) {
+139                    int newX = x;
+140                    switch (direction) {
+141                    case RIGHT: newX += 2;
+142                                break;
+143                    case LEFT: newX -= 2;
+144                    }
+145                    return newX;
+146            }
+147            
+148            private int getNewY(int y, int direction) {
+149                    int newY = y;
+150                    
+151                    switch (direction) {
+152                    case TOP: newY -= 2;
+153                                    break;
+154                    case BOTTOM: newY += 2;
+155                    }
+156                    
+157                    return newY;
+158            }
+159            /**
+160             * Prints out the contents of this board with
+161             * <ul>
+162             * <li>0 = no valid field</li>
+163             * <li>1 = field with a peg</li>
+164             * <li>2 = field without a peg</li>
+165             * </ul>
+166             */
+167            public void print() {
+168                    for (int x = 0; x < board.length; x++) {
+169                            for (int y = 0; y < board[x].length; y++) {
+170                                    System.out.print(board[x][y]);
+171                            }
+172                            System.out.println();
+173                    }
+174                    System.out.println();
+175            }
+176            
+177            /**
+178             * Returns true if there is a peg at (x,y).
+179             */
+180            public boolean isOccupied(int x, int y) {
+181                    return board[x][y] == OCCUPIED;
+182            }
+183    
+184            public int [] getDirections() {
+185                    return Arrays.copyOf(richtungen, richtungen.length); // JDK 1.6 nötig
+186            }
+187    }
+

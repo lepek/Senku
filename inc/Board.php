@@ -12,17 +12,7 @@ class Board {
 	const RIGHT = 0;
 	const TOP = 1;
 	const LEFT = 2;
-	const BOTTOM = 3;
-	
-	/**
-	 * Objects can be used instead of constants
-	 *
-	 */
-	const TABLE = 0;
-	const OCCUPIED = 1;
-	const BLANK = 2;
-	
-	private $symbols = array();
+	const BOTTOM = 3;	
 	
 	/**
 	* The game board with initial position of all pegs
@@ -51,6 +41,10 @@ class Board {
 
 	}
 	
+	public function getDirections() {
+		return array(self::RIGHT, self::TOP, self::LEFT, self::BOTTOM);
+	}
+	
 	/**
 	 * Is it possible to change the board size and keep
 	 * using the same algorithms?
@@ -71,6 +65,26 @@ class Board {
 
 	public function setPeg($x, $y) {
 		$this->board[$x][$y] = new Peg();
+	}	
+	
+	/**
+	 * Talking about performance is faster to store and search for a hash 
+	 * since we need to compare only the board attribute to identify the board.
+	 * Is not very OOP in my opinion, but is almos 50% faster in this case.
+	 * __compare() is not an option right now.
+	 */	
+	public function hash() {
+		$hash = null;
+		for ($x = 0; $x < $this->getWidth(); $x++) {
+			for ($y = 0; $y < $this->getHeight(); $y++) {
+				if ($this->board[$x][$y] instanceof Peg) {
+					$hash .= 'P';  		
+				} else {
+					$hash .= 'B';
+				}
+			}
+		}
+		return $hash;
 	}
 	
 	/**
@@ -150,7 +164,7 @@ class Board {
 	 * @param int $newY Final Peg's column
 	 * @return boolean
 	 */
-	private function isValidMove($x, $y, $newX, $newY) {
+	private function isValidMove($x, $y, $newX, $newY) {		
 		return (0 <= $x && $x < $this->getWidth() 
 			&& 0 <= $y && $y < $this->getHeight()
 			&& 0 <= $newX && $newX < $this->getWidth() 

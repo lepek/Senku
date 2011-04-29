@@ -3,10 +3,11 @@
 require_once 'inc/Game.php';
 
 /**
- * 60 seconds is a reasonable time to find a
- * solution for the game
+ * Let use the standard 30 seconds 
+ * to run the whole program,
+ * not only to solve the game!
  */
-set_time_limit(60);
+set_time_limit(30);
 
 $game = new Game();
 
@@ -15,8 +16,9 @@ $t1 = microtime(true);
 if ($game->solve()) {
 	print "Solution found in ".(microtime(true)-$t1)." [s]<br />";
 	$game->printSolution();
+	$game->save();
 } else {
-	print "No solution found!?";
+	print "No solution!";
 }
 
 ?>

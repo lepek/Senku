@@ -54,6 +54,12 @@ class Game {
 		}
 	}
 	
+	public function save() {
+		if ($this->solution instanceof Solution) {
+			$this->solution->save();
+		}
+	}
+	
 }
 
 ?>

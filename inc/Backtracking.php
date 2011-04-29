@@ -1,12 +1,13 @@
 <?php
 
+require_once 'IAlgorithm.php';
 require_once 'Solution.php';
 
 /**
  * Backtracking and pruning algorithm class
  *
  */
-class Backtracking {
+class Backtracking implements IAlgorithm {
 	
 	const RIGHT = 0;
 	const TOP = 1;
@@ -41,6 +42,10 @@ class Backtracking {
 		$this->solution->setSolution(0, $board);		
 	}
 	
+	/**
+	 * This could be refactored and move it to an abstract class
+	 * in the future if is needed.
+	 */
 	public function getSolution() {		
 		return $this->solution;
 	}

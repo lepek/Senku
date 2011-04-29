@@ -15,32 +15,52 @@ class Board {
 	const BOTTOM = 3;	
 	
 	/**
-	* The game board with initial position of all pegs
-	*/
+	* The game board with initial position of all pegs for a new game
+	*/	
+	private $board = array(
+		array(null, null, 1, 1, 1, null, null),
+		array(null, null, 1, 1, 1, null, null),
+		array(1, 1, 1, 1, 1, 1, 1),
+		array(1, 1, 1, 0, 1, 1, 1),
+		array(1, 1, 1, 1, 1, 1, 1),
+		array(null, null, 1, 1, 1, null, null),
+		array(null, null, 1, 1, 1, null, null),		
+	);
 	
-	private $board = array();
-	
-	public function __construct($width = null, $height = null, $initialX = null, $initialY = null) {
+	public function __construct($encodedBoard = null, $opts = array()) {					
+		if (!isset($opts['width'])) $opts['width'] = 7;
+		if (!isset($opts['height'])) $opts['height'] = 7;
+		
+		if (is_null($encodedBoard)) $encodedBoard = $this->board;
+		$this->board = $this->build($encodedBoard, $opts['width'], $opts['height']);
+	}
 
-		if (is_null($width)) $width = 7;
-		if (is_null($height)) $height = 7;
-		
-		if (is_null($initialX)) $initialX = 3;
-		if (is_null($initialY)) $initialY = 3;		
-		
+	/**
+	 * From a two-dimension array encoded with 1s and 0s
+	 * we build out board. With this we give the posibility to
+	 * use the class for different board configurations.
+	 * 
+	 * @param array $encodedBoard
+	 * @param int $width
+	 * @param int $height
+	 */
+	public function build($encodedBoard, $width, $height) {
+		$board = array_fill(0, $width, array_fill(0, $height, null));
 		for ($x = 0; $x < $width; $x++) {
 			for ($y = 0; $y < $height; $y++) {				
-				if ($x > 1 && $x < 5 || $y > 1 && $y < 5) {
-					$this->board[$x][$y] = new Peg();
-				} else {
-					$this->board[$x][$y] = null;
+				if ($encodedBoard[$x][$y] == 1) {
+					$board[$x][$y] = new Peg();
+				} else if (!is_null($encodedBoard[$x][$y])) {
+					$board[$x][$y] = new Blank();
 				}
 			}
 		}
-		$this->board[$initialX][$initialY] = new Blank();		
-
+		return $board; 
 	}
 	
+	/**
+	 * Valid direction to move through this board
+	 */
 	public function getDirections() {
 		return array(self::RIGHT, self::TOP, self::LEFT, self::BOTTOM);
 	}
@@ -151,6 +171,10 @@ class Board {
 	 */
 	public function isOccupied($x, $y) {
 		return ($this->board[$x][$y] instanceof Peg);
+	}
+	
+	public function isBlank($x, $y) {
+		return ($this->board[$x][$y] instanceof Blank);
 	}
 
 	/**

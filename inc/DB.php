@@ -3,6 +3,7 @@
 /**
  * 
  * *VERY BASIC* Singleton class to connect and query the game's db
+ * This class is here only to avoid packing PDO or similar with the project
  * @todo Improve the poor error handling
  * @todo Implement security against sql-injection
  * @todo Fix return values
@@ -50,14 +51,16 @@ class DB {
     
     /**
      * 
-     * This should read from a config file
+     * This should method read from a config file
      * or env vars or whatever.
+     * 
+     * @todo Removing hardcoded access data
      */
 	private function getData() {
 		return array(
 			'dbhost' => 'localhost', 
 			'dbuser' => 'root',
-			'dbpass' => 'apache23',
+			'dbpass' => '',
 			'dbname' => 'game',
 		);
 	}    

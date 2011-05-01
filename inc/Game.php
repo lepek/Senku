@@ -24,7 +24,7 @@ class Game {
 	 * @return boolean
 	 * 
 	 * @todo Add more algorithms to solve the game
-	 * @todo Refactor the case to a Factory class
+	 * @todo Refactor the <code>case</code> to a Factory class
 	 * 
 	 */
 	public function solve($method = null) {
@@ -53,12 +53,12 @@ class Game {
 	 *
 	 */
 	public function printSolution() {
-		if (is_a($this->solution, 'Solution')) {
+		if ($this->solution instanceof  Solution) {
 			$this->solution->show();
 		}
 	}
 	
-	public function save() {
+	public function saveSolution() {
 		if ($this->solution instanceof Solution) {
 			$this->solution->save();
 		}

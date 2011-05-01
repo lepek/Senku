@@ -16,7 +16,7 @@ $t1 = microtime(true);
 if ($game->solve()) {
 	print "Solution found in ".(microtime(true)-$t1)." [s]<br />";
 	$game->printSolution();
-	$game->save();
+	$game->saveSolution();
 } else {
 	print "No solution!";
 }

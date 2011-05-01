@@ -4,16 +4,14 @@ require_once 'IAlgorithm.php';
 require_once 'Solution.php';
 
 /**
- * Backtracking and pruning algorithm class
+ * Backtracking and Pruning algorithm class
  *
  */
 class Backtracking implements IAlgorithm {
 	
-	const RIGHT = 0;
-	const TOP = 1;
-	const LEFT = 2;
-	const BOTTOM = 3;
-	
+	/**
+	 * The algorithm will end after 32 valid movements
+	 */
 	const STEPS = 32;		
 	
 	/**
@@ -32,6 +30,7 @@ class Backtracking implements IAlgorithm {
 	
 	/**	 
 	 * Solution instance
+	 * 
 	 * @var Solution
 	 */
 	private $solution;	
@@ -44,7 +43,7 @@ class Backtracking implements IAlgorithm {
 	
 	/**
 	 * This could be refactored and move it to an abstract class
-	 * in the future if is needed.
+	 * in the future if is needed, so every algortihm could share it
 	 */
 	public function getSolution() {		
 		return $this->solution;
@@ -65,10 +64,10 @@ class Backtracking implements IAlgorithm {
 	
 	/**
 	* Backtracking algorithm implemented with a recursive function
-	* There are many possible ways to walk through the board (secuncials, random, etc)
+	* There are many possible ways to walk through the board (secuencials, random, etc)
 	* Here it starts from the upper left corner and it moves down and to the right.
 	* 
-	* @param move current number of move
+	* @param move Current number of move
 	*/
 	private function findSolution1($move) {
 		for ($x = 0; $move < self::STEPS && $x < $this->board->getWidth(); $x++) {
@@ -80,9 +79,9 @@ class Backtracking implements IAlgorithm {
 	}
 	
 	/**	 
-	 * This is another way to read the board and decide.
+	 * This is another way to read the board and make decisions.
 	 * 
-	 * @param move current number of move
+	 * @param move Current number of move
 	 */
 	private function findSolution2($move) {
 		for ($y = ($this->board->getHeight() - 1); $move < self::STEPS && $y >= 0; $y--) {
@@ -96,7 +95,8 @@ class Backtracking implements IAlgorithm {
 	/**
 	 * Try to move the peg in (x,y). 
 	 * It tries the directions in the order defined by the board object. 
-	 * This can be changed in the future implementing some kind of heuristic.
+	 * The order we read the directions can be changed in the future 
+	 * implementing some kind of heuristic.
 	 *
 	 * @param int $move Move number
 	 * @param int $x Peg's row
@@ -127,4 +127,3 @@ class Backtracking implements IAlgorithm {
 	
 }
 
-?>

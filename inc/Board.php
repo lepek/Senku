@@ -8,14 +8,18 @@ require_once 'Blank.php';
  *
  */
 class Board {
-	
+
+	/**
+	 * Constants to represent the directions
+	 *
+	 */
 	const RIGHT = 0;
 	const TOP = 1;
 	const LEFT = 2;
 	const BOTTOM = 3;	
 	
 	/**
-	* The game board with initial position of all pegs for a new game
+	* The game board with initial position of all pegs for a new standard game
 	*/	
 	private $board = array(
 		array(null, null, 1, 1, 1, null, null),
@@ -37,7 +41,7 @@ class Board {
 
 	/**
 	 * From a two-dimension array encoded with 1s and 0s
-	 * we build out board. With this we give the posibility to
+	 * we build the board. With this we give the posibility to
 	 * use the class for different board configurations.
 	 * 
 	 * @param array $encodedBoard
@@ -59,7 +63,7 @@ class Board {
 	}
 	
 	/**
-	 * Valid direction to move through this board
+	 * Valid directions to move through this board
 	 */
 	public function getDirections() {
 		return array(self::RIGHT, self::TOP, self::LEFT, self::BOTTOM);
@@ -90,8 +94,8 @@ class Board {
 	/**
 	 * Talking about performance is faster to store and search for a hash 
 	 * since we need to compare only the board attribute to identify the board.
-	 * Is not very OOP in my opinion, but is almos 50% faster in this case.
-	 * __compare() is not an option right now.
+	 * Is not very OOP, but is almost 50% faster in this case.
+	 * __compare() is not an option right now (http://bugs.php.net/bug.php?id=51875)
 	 */	
 	public function hash() {
 		$hash = null;
@@ -110,7 +114,7 @@ class Board {
 	/**
 	 * Jumps the peg from (x,y) over the neighbouring peg in the given <code>direction</code>
 	 * and removes the peg we have jumped over. 
-	 * Returns true if the move was according to the game rules; and false otherwise.
+	 * Returns true if the move was according to the game rules and false otherwise.
 	 * The game board only changes state if the move was valid.
 	 * 
 	 * @param int $x The row of the Peg to be moved
@@ -147,7 +151,7 @@ class Board {
 	}
 	
 	/**
-	 * Prints out the contents of this board
+	 * Prints out the contents of this board in HTML format
 	 * 
 	 * @todo Add more output formats
 	 */
@@ -226,4 +230,3 @@ class Board {
 	
 }
 
-?>
